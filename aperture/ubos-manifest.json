@@ -1,0 +1,133 @@
+{
+    "type" : "app",
+
+    "roles" : {
+        "apache2" : {
+            "fixedcontext" : "",
+
+            "depends" : [
+                "php",
+                "php-apache",
+                "beanstalkd"
+            ],
+            "apache2modules" : [
+                "php7"
+            ],
+            "phpmodules" : [
+                "pdo_mysql"
+            ],
+
+            "appconfigitems" : [
+                {
+                    "type"         : "tcpport",
+                    "name"         : "redis"
+                },
+                {
+                    "type"         : "file",
+                    "name"         : "${appconfig.apache2.appconfigfragmentfile}",
+                    "template"     : "tmpl/htaccess.tmpl",
+                    "templatelang" : "varsubst"
+                },
+                {
+                    "type"   : "perlscript",
+                    "source" : "bin/create-logdir.pl"
+                },
+                {
+                    "type" : "directorytree",
+                    "names" : [
+                        "app",
+                        "artisan",
+                        "bootstrap",
+                        "config",
+                        "database",
+                        "public",
+                        "resources",
+                        "routes",
+                        "vendor"
+                    ],
+                    "source" : "/ubos/share/aperture/$2"
+                },
+                {
+                    "type" : "directory",
+                    "name" : "storage"
+                },
+                {
+                    "type" : "directorytree",
+                    "names" : [
+                        "storage/app",
+                        "storage/framework"
+                    ],
+                    "source" : "/ubos/share/aperture/storage/$2"
+                },
+                {
+                    "type"         : "file",
+                    "name"         : "${appconfig.apache2.dir}/.env",
+                    "template"     : "tmpl/dotenv.tmpl",
+                    "templatelang" : "varsubst"
+                },
+                {
+                    "type"   : "symlink",
+                    "name"   : "storage/logs",
+                    "source" : "/var/log/${package.name}/${appconfig.appconfigid}"
+                },
+                {
+                    "type"         : "perlscript",
+                    "source"       : "bin/initialize.pl"
+                }
+            ],
+            "installers" : [
+                {
+                    "type"         : "perlscript",
+                    "source"       : "bin/migrate.pl"
+                },
+                {
+                    "type"         : "perlscript",
+                    "source"       : "bin/create-account.pl"
+                }
+            ],
+            "upgraders" : [
+                {
+                    "type"         : "perlscript",
+                    "source"       : "bin/migrate.pl"
+                }
+            ]
+        },
+        "mysql" : {
+            "appconfigitems" : [
+                {
+                    "type"             : "database",
+                    "name"             : "maindb",
+                    "retentionpolicy"  : "keep",
+                    "retentionbucket"  : "maindb",
+                    "privileges"       : "all privileges"
+                }
+            ]
+        }
+    },
+    "customizationpoints" : {
+        "userurl" : {
+            "name"     : "User's URL for IndieAuth purposes",
+            "type"     : "url",
+            "required" : true
+        },
+        "watchtowerurl" : {
+            "name"     : "URL to an instance of the watchtower app",
+            "type"     : "url",
+            "required" : true
+        },
+        "watchtowertoken" : {
+            "name"     : "API token for the watchtower app",
+            "type"     : "password",
+            "required" : true
+        },
+        "appkey" : {
+            "name"     : "Secret token for data encryption",
+            "type"     : "password",
+            "required" : false,
+            "private"  : true,
+            "default"  : {
+                "expression" : "${randomBytes(32)}"
+            }
+        }
+    }
+}

@@ -1,0 +1,47 @@
+APP_NAME=Aperture
+APP_ENV=production
+APP_KEY=base64:${base64encode(installable.customizationpoints.appkey.value)}
+APP_DEBUG=true
+APP_LOG_LEVEL=debug
+APP_URL=${site.protocol}://${site.hostname}
+
+# Configure a hostname to serve images from storage/app/media
+# MEDIA_URL=https://aperture-media.example
+
+USER_AGENT="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/57.0.2987.133 Safari/537.36 Aperture/0.1"
+
+WATCHTOWER_URL=${installable.customizationpoints.watchtowerurl.value}
+WATCHTOWER_CB=${site.protocol}://${site.hostname}
+WATCHTOWER_TOKEN=${installable.customizationpoints.watchtowertoken.value}
+
+DB_CONNECTION=mysql
+DB_HOST=${appconfig.mysql.dbhost.maindb}
+DB_PORT=${appconfig.mysql.dbport.maindb}
+DB_DATABASE=${appconfig.mysql.dbname.maindb}
+DB_USERNAME=${appconfig.mysql.dbuser.maindb}
+DB_PASSWORD=${appconfig.mysql.dbusercredential.maindb}
+
+BROADCAST_DRIVER=log
+CACHE_DRIVER=file
+SESSION_DRIVER=file
+SESSION_LIFETIME=120
+QUEUE_DRIVER=sync
+
+REDIS_HOST=127.0.0.1
+REDIS_PASSWORD=null
+REDIS_PORT=${appconfig.tcpport.redis}
+
+MAIL_DRIVER=smtp
+MAIL_HOST=localhost
+MAIL_PORT=smtp
+MAIL_USERNAME=null
+MAIL_PASSWORD=null
+MAIL_ENCRYPTION=null
+
+SQL_LOG_QUERIES=false
+SQL_LOG_SLOW_QUERIES=false
+SQL_SLOW_QUERIES_MIN_EXEC_TIME=100
+SQL_LOG_OVERRIDE=false
+SQL_LOG_DIRECTORY=logs
+SQL_CONVERT_TIME_TO_SECONDS=false
+SQL_LOG_SEPARATE_ARTISAN=false

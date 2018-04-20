@@ -1,0 +1,5 @@
+Alias "${appconfig.context}/" "${appconfig.apache2.dir}/public/"
+
+<Directory "${appconfig.apache2.dir}">
+    php_admin_value open_basedir ${site.apache2.sitedocumentdir}:${host.tmpdir}/:/ubos/share/:/srv/http/:/var/log/${package.name}/
+</Directory>
